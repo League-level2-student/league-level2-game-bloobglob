@@ -10,6 +10,7 @@ public class Platformer {
 	Platformer(){
 		frame = new JFrame();
 		frame.addKeyListener(gamePanel);
+		frame.addMouseListener(gamePanel);
 	}
 	void setup() {
 		frame.add(gamePanel);

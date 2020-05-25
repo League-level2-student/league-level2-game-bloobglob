@@ -7,17 +7,22 @@ import java.awt.Rectangle;
 public class Player {
 	Rectangle hitbox = new Rectangle();
 	int respawnX = 10;
-	int respawnY = 360;
+	int respawnY = 240;
 	int x = respawnX;
 	int y = respawnY;
-	double xvel = 0;
-	double yvel = -1;
+	int yvel = -1;
+	int xvel = 0;
+	int falling;
+	boolean left = false;
+	boolean right = false;
+	boolean up = false;
 	void update(){
-		x+=xvel;
 		y-=yvel;
+		yvel--;
+		x+=xvel;
 	}
 	void draw(Graphics g) {
-		g.setColor(Color.BLACK);
+		g.setColor(Color.BLUE);
 		g.fillRect(x, y, 50, 50);
 		hitbox.setBounds(x, y, 50, 50);
 	}

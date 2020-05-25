@@ -7,12 +7,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-public class GamePanel extends JPanel implements ActionListener, KeyListener {
+public class GamePanel extends JPanel implements ActionListener, KeyListener, MouseListener {
 	final int MENU = 0;
 	final int GAME = 1;
 	final int FINISH = 2;
@@ -22,8 +25,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	Font titleFont = new Font("Arial", Font.PLAIN, 48);
 	Font smallFont = new Font("Arial", Font.PLAIN, 28);
 	Player player = new Player();
-	Level level = new Level();
-	ObjectManager manager = new ObjectManager(player, level);
+	ArrayList<Wall> walls = new ArrayList<Wall>();
+	ArrayList<Ground> grounds = new ArrayList<Ground>();
+	ObjectManager manager = new ObjectManager(player, walls, grounds);
 	void drawMenuState(Graphics g) {
 		g.setColor(Color.BLUE);
 		g.fillRect(0, 0, Platformer.WIDTH, Platformer.HEIGHT);
@@ -36,8 +40,13 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	}
 	void drawGameState(Graphics g) {
 		g.setColor(Color.WHITE);
+		for(int i = 0;i<manager.g.size(); i++) {
+			manager.g.get(i).draw(g);
+		}
+		for(int i = 0;i<manager.w.size(); i++) {
+			manager.w.get(i).draw(g);
+		}
 		player.draw(g);
-		level.draw(g);
 	}
 	void drawFinishState(Graphics g) {
 		g.setColor(Color.GREEN);
@@ -53,7 +62,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		
 	}
 	void updateGameState() {
-		player.update();
+		manager.update();
 	}
 	void updateFinishState()  {
 		
@@ -95,16 +104,60 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 				JOptionPane.showMessageDialog(null, "Use left and right arrow keys to move and up to jump. \nTry to reach the right side of the screen, and avoid lava");
 			}
 		}
-		if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+		if(e.getKeyCode()==KeyEvent.VK_ENTER) {
 		    if (currentState == FINISH) {
 		        currentState = MENU;
 		    }else if(true){
 		        currentState++;
 		    }
 		} 
+		if(e.getKeyCode() == KeyEvent.VK_LEFT) {
+			player.left = true;
+		}
+		if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			player.right = true;
+		}
+		if(e.getKeyCode() == KeyEvent.VK_UP) {
+			if(player.falling<6) {
+				player.up = true;
+			}
+		}
 	}
 	@Override
 	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		if(e.getKeyCode() == KeyEvent.VK_LEFT) {
+			player.left = false;
+		}
+		if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			player.right = false;
+		}
+		if(e.getKeyCode() == KeyEvent.VK_UP) {
+			player.up = false;
+		}
+	}
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		System.out.println(e.getX() + ", " + e.getY());
+	}
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
