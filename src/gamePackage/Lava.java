@@ -3,9 +3,8 @@ package gamePackage;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.util.ArrayList;
 
-public class Wall {
+public class Lava {
 	int x;
 	int y;
 	int width;
@@ -15,11 +14,11 @@ public class Wall {
 		
 	}
 	void draw(Graphics g) {
-		g.setColor(Color.BLACK);
+		g.setColor(Color.RED);
 		g.fillRect(x, y, width, height);
 		collision.setBounds(x, y, width, height);
 	}
-	void setWall(int x, int y, int width, int height) {
+	void setLava(int x, int y, int width, int height) {
 		this.x = x;
 		this.y = y;
 		this.width = width;

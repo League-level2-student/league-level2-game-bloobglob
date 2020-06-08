@@ -16,18 +16,20 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class GamePanel extends JPanel implements ActionListener, KeyListener, MouseListener {
-	final int MENU = 0;
-	final int GAME = 1;
-	final int FINISH = 2;
+	final static int MENU = 0;
+	final static int GAME = 1;
+	final static int FINISH = 2;
 	public static int LEVEL = 1;
-	int currentState = MENU;
+	Color color = Color.black;
+	public static int currentState = MENU;
 	Timer frameDraw = new Timer(1000/60, this);
 	Font titleFont = new Font("Arial", Font.PLAIN, 48);
 	Font smallFont = new Font("Arial", Font.PLAIN, 28);
 	Player player = new Player();
 	ArrayList<Wall> walls = new ArrayList<Wall>();
 	ArrayList<Ground> grounds = new ArrayList<Ground>();
-	ObjectManager manager = new ObjectManager(player, walls, grounds);
+	ArrayList<Lava> lavas = new ArrayList<Lava>();
+	ObjectManager manager = new ObjectManager(player, walls, grounds, lavas);
 	void drawMenuState(Graphics g) {
 		g.setColor(Color.BLUE);
 		g.fillRect(0, 0, Platformer.WIDTH, Platformer.HEIGHT);
@@ -39,12 +41,17 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener, Mo
 		g.drawString("Press SPACE for instructions", 170, 250);
 	}
 	void drawGameState(Graphics g) {
-		g.setColor(Color.WHITE);
+		g.setColor(Color.BLACK);
+		g.setFont(smallFont);
+		g.drawString("Level: " + LEVEL, 10, 30);
 		for(int i = 0;i<manager.g.size(); i++) {
 			manager.g.get(i).draw(g);
 		}
 		for(int i = 0;i<manager.w.size(); i++) {
 			manager.w.get(i).draw(g);
+		}
+		for(int i = 0;i<manager.l.size(); i++) {
+			manager.l.get(i).draw(g);
 		}
 		player.draw(g);
 	}
@@ -55,7 +62,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener, Mo
 		g.setFont(titleFont);
 		g.drawString("Congratulations!", 190, 100);
 		g.setFont(smallFont);
-		g.drawString("You won the game with " + "" + " deaths.", 160, 200);
+		g.drawString("You won the game with " + manager.deaths + " deaths.", 160, 200);
 		g.drawString("Press ENTER to play again", 190, 250);
 	}
 	void updateMenuState() {
@@ -63,6 +70,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener, Mo
 	}
 	void updateGameState() {
 		manager.update();
+		if(player.x+50>720) {
+			LEVEL++;
+			manager.respawn();
+		}
 	}
 	void updateFinishState()  {
 		
@@ -106,14 +117,17 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener, Mo
 		}
 		if(e.getKeyCode()==KeyEvent.VK_ENTER) {
 		    if (currentState == FINISH) {
+		    	manager=new ObjectManager(player, walls, grounds, lavas);
+		    	LEVEL=1;
 		        currentState = MENU;
-		    }else if(true){
-		        currentState++;
 		    }
-		} 
-		if(e.getKeyCode() == KeyEvent.VK_LEFT) {
-			player.left = true;
+		    if(currentState == MENU) {
+		    	currentState++;
+		    }
 		}
+			if(e.getKeyCode() == KeyEvent.VK_LEFT) {
+				player.left = true;
+			}
 		if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			player.right = true;
 		}
